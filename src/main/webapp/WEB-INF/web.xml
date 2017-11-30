@@ -11,11 +11,23 @@
         <servlet-name>ServletFirst</servlet-name>
         <servlet-class>com.aries.servlet.ServletFirst</servlet-class>
     </servlet>
-
     <servlet-mapping>
         <servlet-name>ServletFirst</servlet-name>
         <url-pattern>/aries</url-pattern>
+
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Register</servlet-name>
+        <servlet-class>com.aries.servlet.form.FormServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Register</servlet-name>
+        <url-pattern>/register</url-pattern>
+    </servlet-mapping>
+
+
+
     <error-page>
         <error-code>404</error-code>
         <location>/index.jsp</location>

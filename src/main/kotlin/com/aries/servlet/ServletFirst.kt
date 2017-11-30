@@ -14,16 +14,21 @@ class ServletFirst:HttpServlet(){
     }
 
     override fun doGet(request: HttpServletRequest, resp: HttpServletResponse) {
-        val out = resp.writer
+        resp.contentType = "text/html;charset=UTF-8"
+        resp.characterEncoding = "UTF-8"
+
 //        resp.contentType = "application/json"
+        val out = resp.writer
 //        val respMessage = ResponseBean()
 //        respMessage.data = "congratulations! request success!"
 //        respMessage.message = "success"
 //        out.write(JsonUtil.writeValueAsString(respMessage))
 //        out.flush()
 
-        resp.contentType = "text/html"
-        out.println("<h1>" + "大飞熊" + "</h1>")
+
+        val result = "<h1>" + "大飞熊!!" + "</h1>"
+
+        out.write(result)
 
     }
 }
