@@ -38,10 +38,23 @@
         <url-pattern>/register</url-pattern>
     </filter-mapping>
 
+    <servlet>
+        <servlet-name>ArgumentErrorHandler</servlet-name>
+        <servlet-class>com.aries.servlet.error.ArgumentErrorHandler</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ArgumentErrorHandler</servlet-name>
+        <url-pattern>/ArgumentErrorHandler</url-pattern>
+    </servlet-mapping>
+
 
 
     <error-page>
         <error-code>404</error-code>
-        <location>/index.jsp</location>
+        <location>/404.html</location>
     </error-page>
+   <error-page>
+       <exception-type>com.aries.servlet.error.ArgumentException</exception-type>
+       <location>/ArgumentErrorHandler</location>
+   </error-page>
 </web-app>

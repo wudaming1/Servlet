@@ -1,5 +1,6 @@
 package com.aries.servlet.form
 
+import com.aries.servlet.error.ArgumentException
 import javax.servlet.http.HttpServlet
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -10,6 +11,12 @@ import java.nio.charset.Charset
 class FormServlet : HttpServlet() {
 
     override fun doGet(req: HttpServletRequest, resp: HttpServletResponse) {
+        if (req.getParameter("first_name").isEmpty()){
+            throw ArgumentException("名字没填！")
+        }
+        if (req.getParameter("last_name").isEmpty()){
+            throw ArgumentException("姓氏没填！")
+        }
         resp.contentType = "text/html;charset=UTF-8"
         resp.characterEncoding = "UTF-8"
         val out = resp.writer
