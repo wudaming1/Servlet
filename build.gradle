@@ -25,6 +25,8 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
     compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.0"
+    compile group: 'javax.servlet', name: 'jstl', version: '1.2'
+    compile group: 'org.apache.taglibs', name: 'taglibs-standard-impl', version: '1.2.5'
 
     //编译时需要，运行时不需要，tomcat环境中有
     providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
