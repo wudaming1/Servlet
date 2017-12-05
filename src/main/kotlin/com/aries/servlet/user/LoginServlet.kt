@@ -8,7 +8,10 @@ import javax.servlet.http.HttpServletResponse
 import java.nio.charset.Charset
 
 
-class FormServlet : HttpServlet() {
+/**
+ * 登录
+ */
+class LoginServlet : HttpServlet() {
 
     override fun doGet(req: HttpServletRequest, resp: HttpServletResponse) {
         if (req.getParameter("name").isEmpty()){

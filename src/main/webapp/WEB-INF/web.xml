@@ -20,12 +20,12 @@
 
 <!--登录、注册相关-->
     <servlet>
-        <servlet-name>Register</servlet-name>
-        <servlet-class>com.aries.servlet.user.FormServlet</servlet-class>
+        <servlet-name>Login</servlet-name>
+        <servlet-class>com.aries.servlet.user.LoginServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>Register</servlet-name>
-        <url-pattern>/register</url-pattern>
+        <servlet-name>Login</servlet-name>
+        <url-pattern>/login</url-pattern>
     </servlet-mapping>
     <filter>
         <filter-name>FilterUser</filter-name>
@@ -37,8 +37,17 @@
     </filter>
     <filter-mapping>
         <filter-name>FilterUser</filter-name>
-        <url-pattern>/register</url-pattern>
+        <url-pattern>/login</url-pattern>
     </filter-mapping>
+
+    <servlet>
+        <servlet-name>Register</servlet-name>
+        <servlet-class>com.aries.servlet.user.RegisterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Register</servlet-name>
+        <url-pattern>/register</url-pattern>
+    </servlet-mapping>
 
     <servlet>
         <servlet-name>UserInfo</servlet-name>
