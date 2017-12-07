@@ -3,12 +3,11 @@ package com.aries.servlet.user
 import com.aries.servlet.bean.HttpResultCode
 import com.aries.servlet.bean.ResponseBean
 import com.aries.servlet.bean.UserBean
-import com.aries.servlet.error.ArgumentException
+import com.aries.servlet.jwt.JWTHelper
 import com.aries.servlet.orm.DBManager
 import com.aries.servlet.utils.JsonUtil
 import java.nio.charset.Charset
 import java.sql.Connection
-import java.sql.DriverManager
 import java.sql.SQLException
 import java.sql.Statement
 import javax.servlet.http.HttpServlet
@@ -31,28 +30,35 @@ class RegisterServlet : HttpServlet() {
         }
         if (req.getParameter("password").isEmpty()) {
             result.resultCode = HttpResultCode.PARAM_ERR
-            message+="\n参数错误，用户名为空！"
+            message += "\n参数错误，用户名为空！"
         }
-        if (!message.isEmpty()){
+        val name = String(req.getParameter("name").toByteArray(Charset.forName("ISO8859-1")), Charset.defaultCharset())
+        val password = String(req.getParameter("password").toByteArray(Charset.forName("ISO8859-1")), Charset.defaultCharset())
+        if (!message.isEmpty()) {
             result.message = message
-        }else {
-            val name = String(req.getParameter("name").toByteArray(Charset.forName("ISO8859-1")), Charset.defaultCharset())
-            val password = String(req.getParameter("password").toByteArray(Charset.forName("ISO8859-1")), Charset.defaultCharset())
+        } else {
+
             var conn: Connection? = null
             var stmt: Statement? = null
 
             try {
-
                 conn = DBManager.connect()
                 stmt = conn.createStatement()
-                val queSql = "select * from app_user where user_name ="+"$name"
+                val queSql = "select * from app_user where user_name =" + "$name"
                 val queryRS = stmt.executeQuery(queSql)
                 message = if (queryRS.next()) {
                     result.resultCode = HttpResultCode.FAIL
                     "用户名已存在，请登录！"
                 } else {
-                    val sql = "INSERT INTO app_user(user_name,password) Values($name,$password)"
-                    stmt.execute(sql)
+                    val sql = "INSERT INTO app_user(user_name,password) Values($name,$password) SELECT @@IDENTITY"
+                    val queryR = stmt.executeQuery(sql)
+                    while (queryR.next()) {
+                        val user = UserBean(id = queryR.getInt("user_id"), userName = name, password = password)
+                        val token = JWTHelper.generateJWT(user)
+                        JWTHelper.putToken(resp, token)
+                        result.data = token
+                    }
+                    queryR.close()
                     result.resultCode = HttpResultCode.SUCCESS
                     "success"
                 }
@@ -88,4 +94,5 @@ class RegisterServlet : HttpServlet() {
         }
         out.println(JsonUtil.writeValueAsString(result))
     }
+
 }

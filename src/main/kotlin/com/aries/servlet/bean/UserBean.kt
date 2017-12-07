@@ -1,3 +1,5 @@
 package com.aries.servlet.bean
 
-data class UserBean(val userName:String,val password:String):BaseBean()
+data class UserBean(val id: Int,
+                    val userName: String,
+                    val password: String) : BaseBean()

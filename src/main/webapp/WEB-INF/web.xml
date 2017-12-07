@@ -28,17 +28,14 @@
         <url-pattern>/login</url-pattern>
     </servlet-mapping>
     <filter>
-        <filter-name>FilterUser</filter-name>
-        <filter-class>com.aries.servlet.user.LoginFilter</filter-class>
+        <filter-name>AuthFilter</filter-name>
+        <filter-class>com.aries.servlet.user.AuthFilter</filter-class>
         <init-param>
             <param-name>name</param-name>
             <param-value>I am a user Filter</param-value>
         </init-param>
     </filter>
-    <filter-mapping>
-        <filter-name>FilterUser</filter-name>
-        <url-pattern>/login</url-pattern>
-    </filter-mapping>
+
 
     <servlet>
         <servlet-name>Register</servlet-name>
@@ -57,6 +54,12 @@
         <servlet-name>UserInfo</servlet-name>
         <url-pattern>/userInfo</url-pattern>
     </servlet-mapping>
+
+    <!--写多少filter-mapping，就会在这些url-pattern启动过滤器-->
+    <filter-mapping>
+        <filter-name>AuthFilter</filter-name>
+        <url-pattern>/userInfo</url-pattern>
+    </filter-mapping>
 
 
 
