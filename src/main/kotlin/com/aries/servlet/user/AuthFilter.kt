@@ -1,6 +1,10 @@
 package com.aries.servlet.user
 
+import com.aries.servlet.ModifyServletRequestWrapper
+import com.aries.servlet.bean.HttpResultCode
+import com.aries.servlet.bean.ResponseBean
 import com.aries.servlet.jwt.JWTHelper
+import com.aries.servlet.utils.JsonUtil
 import com.auth0.jwt.exceptions.AlgorithmMismatchException
 import com.auth0.jwt.exceptions.InvalidClaimException
 import com.auth0.jwt.exceptions.SignatureVerificationException
@@ -23,22 +27,23 @@ class AuthFilter : Filter {
             try {
                 if (JWTHelper.verifyToken(token)) {
                     //校验通过
-                    chain.doFilter(request, response)
+                    val userId = JWTHelper.parserIdformToken(token)
+                    chain.doFilter(ModifyServletRequestWrapper(userId, request), response)
                 }
             } catch (e: AlgorithmMismatchException) {
-                errMessage += e.message?:""
+                errMessage += e.message ?: ""
             } catch (e: SignatureVerificationException) {
-                errMessage += e.message?:""
+                errMessage += e.message ?: ""
             } catch (e: TokenExpiredException) {
-                errMessage += e.message?:""
+                errMessage += e.message ?: ""
             } catch (e: InvalidClaimException) {
-                errMessage += e.message?:""
+                errMessage += e.message ?: ""
             }
-            if (!errMessage.isEmpty()){
-                //todo 不要继续传递chain，在这里产生响应结果。
+            if (!errMessage.isEmpty()) {
+                val result = ResponseBean(HttpResultCode.TOKEN_INVALID, "", errMessage)
+                response.writer.println(JsonUtil.writeValueAsString(result))
             }
         } else {
-
             chain.doFilter(request, response)
         }
 

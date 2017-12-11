@@ -2,6 +2,7 @@ package com.aries.servlet.jwt
 
 import com.auth0.jwt.interfaces.RSAKeyProvider
 import java.security.KeyFactory
+import java.security.KeyPairGenerator
 import java.security.interfaces.RSAPrivateKey
 import java.security.interfaces.RSAPublicKey
 import java.security.spec.PKCS8EncodedKeySpec
@@ -11,27 +12,9 @@ import java.util.*
 
 class MyRSAKeyProvider: RSAKeyProvider{
 
-    val publicKeyString = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCoolXoYFhlYKaSWizDPGpWjrj/" +
-            "FHpVtMYndyJPEhm7vPStQsR6VEgritIrKF2b038ApSIqfsH4gLZQKrURK3M32K9+" +
-            "qmY30uHriUvfAxLWQSZR3GRX4ZwQpN2V/1ifNHXRxjg8Q9weRrqjaD5IKgo/4GLa" +
-            "hIhO0ltYC1i+qa5EXwIDAQAB"
+    val publicKeyString = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCqPvovSfXcwBbW8cKMCgwqNpsYuzF8RPAPFb7LGsnVo44JhM/xxzDyzoYtdfNmtbIuKVi9PzIsyp6rg+09gbuI6UGwBZ5DWBDBMqv5MPdOF5dCQkB2Bbr5yPfURPENypUz+pBFBg41d+BC+rwRiXELwKy7Y9caD/MtJyHydj8OUwIDAQAB"
 
-
-    val privateKeyString = "MIICxjBABgkqhkiG9w0BBQ0wMzAbBgkqhkiG9w0BBQwwDgQI9BeDg7qQDNoCAggA" +
-            "MBQGCCqGSIb3DQMHBAhABTK9Aog+CwSCAoBtZ1kFXmYINlUO+Pzx1Dh+wco0khfA" +
-            "PmriShd1OMzEDtcyyg8FzyA6Y62Ilzee+KA3iroYHnP0gn1f6+Y1GF/Bnswwn6cZ" +
-            "5CIZz0XCnhutUg5Jkf2v+yhCacj2X6A8aANrHBgQAtop0UqGq6+LxkKAaxN6sRcY" +
-            "zk24s1AyZq4MMuASeH+YZPiyi57IH7Eeb2rukAAO73eC1wc3uize5R54d0tMgaW5" +
-            "MYcz+QT3jd7dlwR0F4b4sU5YRP2HU8gBCN1Nh52mBfU9FFbUtQ8UEs4UDX2xxRTJ" +
-            "Ne++0byv+yWB/XmwxDvugqs2JnroePEz4eTquWLW5EvCiIItOdSPlVV4rWBYOgK7" +
-            "2XyX7SQF3UdySl6we9/wpOAk/fTLAtb+KpOx3GZv10wvWi7VSqS/udAVIqDOu8KJ" +
-            "T1dwTcwQNO01ZdbF9sVWDlmyp08PgTGplYpby6bV1o6rmeAdxhz6gEXa/x2KNqji" +
-            "tLKW16hzU+j5TPAv1v0t9VHbMwswTTLx6TiOom9CtKHNYzutokcqilks2vGU9rWz" +
-            "0C0wl8dQ0+2nIqi0Bgp9NOCN6gVQziZHUkGefoCWMgrGxSR6UWnL0POpl1jK2a7k" +
-            "D2WBBLUJ8BSdLgFhLbeDTbPU8LWe4xLNqJUITprSQIlfESFhXFlf/uF5Xb1aPXHL" +
-            "Ll1KfH3C24VYr9+bVSE++bfTTvINhTDs4R1rXN21jclx6xpaeb5/JFW3tH8IhjnD" +
-            "hQMjrsxVmLvTYWMuwpsN6ZpvpXWg3mI2i2jhHNSuY4khnUcpSTRJCRk39bSbZYeI" +
-            "YYvZPuCyp0HCo1BeUKi5Z2U71Vclfzt52WEajGz4CtDcEGu57lYSxeBl"
+    val privateKeyString = "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKo++i9J9dzAFtbxwowKDCo2mxi7MXxE8A8VvssaydWjjgmEz/HHMPLOhi1182a1si4pWL0/MizKnquD7T2Bu4jpQbAFnkNYEMEyq/kw904Xl0JCQHYFuvnI99RE8Q3KlTP6kEUGDjV34EL6vBGJcQvArLtj1xoP8y0nIfJ2Pw5TAgMBAAECgYAGGB8IllMwxceLhjf6n1l0IWRH7FuHIUieoZ6k0p6rASHSgWiYNRMxfecbtX8zDAoG0QAWNi7rn40ygpR5gS1fWDAKhmnhKgQIT6wW0VmD4hraaeyP78iy8BLhlvblri2nCPIhDH5+l96v7D47ZZi3ZSOzcj89s1eS/k7/N4peEQJBAPEtGGJY+lBoCxQMhGyzuzDmgcS1Un1ZE2pt+XNCVl2b+T8fxWJH3tRRR8wOY5uvtPiK1HM/IjT0T5qwQeH8Yk0CQQC0tcv3d/bDb7bOe9QzUFDQkUSpTdPWAgMX2OVPxjdq3Sls9oA5+fGNYEy0OgyqTjde0b4iRzlD1O0OhLqPSUMfAkEAh5FIvqezdRU2/PsYSR4yoAdCdLdT+h/jGRVefhqQ/6eYUJJkWp15tTFHQX3pIe9/s6IeT/XyHYAjaxmevxAmlQJBAKSdhvQjf9KAjZKDEsa7vyJ/coCXuQUWSCMNHbcR5aGfXgE4e45UtUoIE1eKGcd6AM6LWhx3rR6xdFDpb9je8BkCQB0SpevGfOQkMk5i8xkEt9eeYP0fi8nv6eOUcK96EXbzs4jV2SAoQJ9oJegPtPROHbhIvVUmNQTbuP10Yjg59+8="
 
 
     val RSA_ALGORITHM = "RSA"
@@ -58,6 +41,7 @@ class MyRSAKeyProvider: RSAKeyProvider{
     }
 
     private fun generatePublicKey(publicKey:String):RSAPublicKey{
+//        println(publicKey)
         val keyBytes = Base64.getDecoder().decode(publicKey.toByteArray())
         val keySpec = X509EncodedKeySpec(keyBytes)
         val keyFactory = KeyFactory.getInstance(RSA_ALGORITHM)
@@ -65,6 +49,7 @@ class MyRSAKeyProvider: RSAKeyProvider{
     }
 
     private fun generatePrivateKey(keyString:String):RSAPrivateKey{
+//        println(keyString)
         val keyBytes = Base64.getDecoder().decode(keyString.toByteArray())
         val keySpec = PKCS8EncodedKeySpec(keyBytes)
         val keyFactory = KeyFactory.getInstance(RSA_ALGORITHM)

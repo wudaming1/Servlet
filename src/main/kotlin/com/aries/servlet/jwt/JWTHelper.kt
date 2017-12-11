@@ -19,13 +19,15 @@ object JWTHelper {
     //有效期3天
     private val leeway = 3 * 24 * 60 * 60 * 1000L
 
+    private val USER_ID = "user_id"
+
     fun generateJWT(user: UserBean): String {
         val algorithm = Algorithm.RSA256(MyRSAKeyProvider())
         val jwt = JWT.create()
                 //在head部分添加自定义字段，不要添加敏感信息
                 .withHeader(mapOf("aries" to "白羊座"))
                 //在payload部分添加自定义字段，不要添加敏感信息
-                .withClaim("user_id", user.id)
+                .withClaim(USER_ID, user.id)
                 //iat:指定jwt的签发时间
                 .withIssuedAt(Date())
                 //iss:jwt签发者
@@ -60,5 +62,11 @@ object JWTHelper {
 
     fun putToken(resp: HttpServletResponse, token: String) {
         resp.addHeader("token", token)
+    }
+
+    fun parserIdformToken(token: String):Int{
+        val jwt = JWT.decode(token)
+        return jwt.getClaim(USER_ID).asInt()
+
     }
 }

@@ -23,12 +23,13 @@ class RegisterServlet : HttpServlet() {
     override fun doPost(req: HttpServletRequest, resp: HttpServletResponse) {
         var message = ""
         val result = ResponseBean()
+        resp.characterEncoding = "UTF-8"
         val out = resp.writer
-        if (req.getParameter("name").isEmpty()) {
+        if (req.getParameter("name").isNullOrEmpty()) {
             result.resultCode = HttpResultCode.PARAM_ERR
             message = "参数错误，用户名为空！"
         }
-        if (req.getParameter("password").isEmpty()) {
+        if (req.getParameter("password").isNullOrEmpty()) {
             result.resultCode = HttpResultCode.PARAM_ERR
             message += "\n参数错误，用户名为空！"
         }
@@ -44,14 +45,15 @@ class RegisterServlet : HttpServlet() {
             try {
                 conn = DBManager.connect()
                 stmt = conn.createStatement()
-                val queSql = "select * from app_user where user_name =" + "$name"
+                val queSql = "select * from app_user where user_name = '$name'"
                 val queryRS = stmt.executeQuery(queSql)
                 message = if (queryRS.next()) {
                     result.resultCode = HttpResultCode.FAIL
                     "用户名已存在，请登录！"
                 } else {
-                    val sql = "INSERT INTO app_user(user_name,password) Values($name,$password) SELECT @@IDENTITY"
-                    val queryR = stmt.executeQuery(sql)
+                    val insertSql = "INSERT INTO app_user(user_name,password) Values('$name','$password')"
+                    stmt.execute(insertSql)
+                    val queryR = stmt.executeQuery(queSql)
                     while (queryR.next()) {
                         val user = UserBean(id = queryR.getInt("user_id"), userName = name, password = password)
                         val token = JWTHelper.generateJWT(user)

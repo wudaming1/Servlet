@@ -22,7 +22,7 @@ class LoginServlet : HttpServlet() {
     override fun doPost(req: HttpServletRequest, resp: HttpServletResponse) {
         val name = String(req.getParameter("name").toByteArray(Charset.forName("ISO8859-1")), Charset.defaultCharset())
         val password = String(req.getParameter("password").toByteArray(Charset.forName("ISO8859-1")), Charset.defaultCharset())
-
+        resp.characterEncoding = "UTF-8"
         val out = resp.writer
         var message = ""
         val result = ResponseBean()
