@@ -52,13 +52,26 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>UserInfo</servlet-name>
-        <url-pattern>/userInfo</url-pattern>
+        <url-pattern>/auth/userInfo</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>HeaderImg</servlet-name>
+        <servlet-class>com.aries.servlet.user.ModifyHeadImg</servlet-class>
+        <init-param>
+            <param-name>path</param-name>
+            <param-value>~/Server/Servlet/resource</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>HeaderImg</servlet-name>
+        <url-pattern>/auth/headerImg</url-pattern>
     </servlet-mapping>
 
     <!--写多少filter-mapping，就会在这些url-pattern启动过滤器-->
     <filter-mapping>
         <filter-name>AuthFilter</filter-name>
-        <url-pattern>/userInfo</url-pattern>
+        <url-pattern>/auth/*</url-pattern>
     </filter-mapping>
 
 

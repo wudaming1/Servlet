@@ -1,13 +1,7 @@
 package com.aries.servlet.jwt
 
-import com.aries.servlet.bean.UserBean
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.auth0.jwt.exceptions.AlgorithmMismatchException
-import com.auth0.jwt.exceptions.InvalidClaimException
-import com.auth0.jwt.exceptions.SignatureVerificationException
-import com.auth0.jwt.exceptions.TokenExpiredException
-import com.sun.org.apache.xpath.internal.operations.Bool
 import java.util.*
 import javax.servlet.http.HttpServletResponse
 
@@ -21,13 +15,13 @@ object JWTHelper {
 
     private val USER_ID = "user_id"
 
-    fun generateJWT(user: UserBean): String {
+    fun generateJWT(userId: Int): String {
         val algorithm = Algorithm.RSA256(MyRSAKeyProvider())
         val jwt = JWT.create()
                 //在head部分添加自定义字段，不要添加敏感信息
                 .withHeader(mapOf("aries" to "白羊座"))
                 //在payload部分添加自定义字段，不要添加敏感信息
-                .withClaim(USER_ID, user.id)
+                .withClaim(USER_ID, userId)
                 //iat:指定jwt的签发时间
                 .withIssuedAt(Date())
                 //iss:jwt签发者

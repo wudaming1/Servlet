@@ -1,8 +1,8 @@
 package com.aries.servlet.user
 
+import com.aries.servlet.base.BaseServlet
 import com.aries.servlet.bean.HttpResultCode
 import com.aries.servlet.bean.ResponseBean
-import com.aries.servlet.bean.UserBean
 import com.aries.servlet.jwt.JWTHelper
 import com.aries.servlet.orm.DBManager
 import com.aries.servlet.utils.JsonUtil
@@ -17,13 +17,13 @@ import javax.servlet.http.HttpServletResponse
 /**
  * 注册
  */
-class RegisterServlet : HttpServlet() {
+class RegisterServlet : BaseServlet() {
 
 
     override fun doPost(req: HttpServletRequest, resp: HttpServletResponse) {
+        super.doPost(req, resp)
         var message = ""
         val result = ResponseBean()
-        resp.characterEncoding = "UTF-8"
         val out = resp.writer
         if (req.getParameter("name").isNullOrEmpty()) {
             result.resultCode = HttpResultCode.PARAM_ERR
@@ -55,8 +55,8 @@ class RegisterServlet : HttpServlet() {
                     stmt.execute(insertSql)
                     val queryR = stmt.executeQuery(queSql)
                     while (queryR.next()) {
-                        val user = UserBean(id = queryR.getInt("user_id"), userName = name, password = password)
-                        val token = JWTHelper.generateJWT(user)
+                        val userId = queryR.getInt("user_id")
+                        val token = JWTHelper.generateJWT(userId)
                         JWTHelper.putToken(resp, token)
                         result.data = token
                     }

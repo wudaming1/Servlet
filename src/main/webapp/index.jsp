@@ -1,4 +1,5 @@
-<%--
+<%@ page import="javax.xml.crypto.Data" %>
+<%@ page import="java.util.Date" %><%--
   Created by IntelliJ IDEA.
   User: wudaming
   Date: 2017/11/29
@@ -12,5 +13,6 @@
   </head>
   <body>
     Hello Aries史蒂芬!
+  <%= (new Date()).toString()  %>
   </body>
 </html>
