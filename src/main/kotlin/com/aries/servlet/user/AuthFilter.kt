@@ -29,6 +29,8 @@ class AuthFilter : Filter {
                     //校验通过
                     val userId = JWTHelper.parserIdformToken(token)
                     chain.doFilter(ModifyServletRequestWrapper(userId, request), response)
+                }else{
+                    errMessage = "token验证失败！token：$token"
                 }
             } catch (e: AlgorithmMismatchException) {
                 errMessage += e.message ?: ""
