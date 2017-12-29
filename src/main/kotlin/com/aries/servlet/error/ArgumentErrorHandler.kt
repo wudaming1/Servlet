@@ -45,7 +45,7 @@ class ArgumentErrorHandler:HttpServlet(){
                     "</br></br>");
             out.println("The request URI: " + requestUri +
                     "<br><br>");
-            out.println("The exception message: " +
+            out.println("The exception error: " +
                     throwable.message)
         }
         out.println("</body>")

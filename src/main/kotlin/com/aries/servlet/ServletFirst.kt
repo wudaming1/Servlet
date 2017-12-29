@@ -20,8 +20,8 @@ class ServletFirst:HttpServlet(){
 //        resp.contentType = "application/json"
         val out = resp.writer
 //        val respMessage = ResponseBean()
-//        respMessage.data = "congratulations! request success!"
-//        respMessage.message = "success"
+//        respMessage.data = "congratulations! request status!"
+//        respMessage.error = "status"
 //        out.write(JsonUtil.writeValueAsString(respMessage))
 //        out.flush()
 

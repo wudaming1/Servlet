@@ -6,12 +6,13 @@ import com.fasterxml.jackson.module.kotlin.readValue
 object JsonUtil{
 
 
-    val mapper = jacksonObjectMapper()
+    private val mapper = jacksonObjectMapper()
 
-    inline fun<reified T: Any> readValue(jsonString: String): Any? {
-        var result: Any? = null
+    fun <T> readValue(jsonString: String, clazz: Class<T>): T? {
+        var result: T? = null
         try {
-            result =mapper.readValue<T>(jsonString)
+
+            result = mapper.readValue<T>(jsonString, clazz)
         } catch (e: Exception) {
             e.printStackTrace()
         }

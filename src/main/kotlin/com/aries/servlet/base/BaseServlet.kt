@@ -10,23 +10,17 @@ open class BaseServlet:HttpServlet(){
         
     }
 
-    override fun doHead(req: HttpServletRequest, resp: HttpServletResponse) {
-        resp.characterEncoding = "UTF-8"
-    }
-
     override fun doDelete(req: HttpServletRequest, resp: HttpServletResponse) {
         resp.characterEncoding = "UTF-8"
     }
 
-    override fun doOptions(req: HttpServletRequest, resp: HttpServletResponse) {
-        resp.characterEncoding = "UTF-8"
-    }
-
-    override fun doTrace(req: HttpServletRequest, resp: HttpServletResponse) {
-        resp.characterEncoding = "UTF-8"
-    }
 
     override fun doGet(req: HttpServletRequest, resp: HttpServletResponse) {
         resp.characterEncoding = "UTF-8"
     }
+
+    override fun doPut(req: HttpServletRequest, resp: HttpServletResponse) {
+        resp.characterEncoding = "UTF-8"
+    }
+
 }

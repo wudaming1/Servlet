@@ -2,8 +2,10 @@ package com.aries.servlet.user
 
 import com.aries.servlet.ModifyServletRequestWrapper
 import com.aries.servlet.base.BaseServlet
-import com.aries.servlet.bean.HttpResultCode
+import com.aries.servlet.bean.ErrorBean
+import com.aries.servlet.bean.ErrorCode
 import com.aries.servlet.bean.ResponseBean
+import com.aries.servlet.bean.ResultCode
 import com.aries.servlet.utils.JsonUtil
 import org.apache.commons.fileupload.disk.DiskFileItemFactory
 import org.apache.commons.fileupload.servlet.ServletFileUpload
@@ -30,9 +32,11 @@ class ModifyHeadImg : BaseServlet() {
     override fun doPut(req: HttpServletRequest, resp: HttpServletResponse) {
         super.doPut(req, resp)
         val responseBean = ResponseBean()
+        val error = ErrorBean()
         if (parentPath.isEmpty()) {
-            responseBean.resultCode = HttpResultCode.FAIL
-            responseBean.message = "存储地址初始化错误"
+            responseBean.status = ResultCode.FAIL
+            error.code = ErrorCode.UNKNOWN
+            error.message = "存储地址初始化错误"
         }
         val id = (req as ModifyServletRequestWrapper).userId
         val path = "$parentPath/$id/info/portrait.jpg"
@@ -62,17 +66,21 @@ class ModifyHeadImg : BaseServlet() {
             try {
                 val fileItems = upload.parseRequest(req)
                 fileItems[0].write(file)
-                responseBean.resultCode = HttpResultCode.SUCCESS
+                responseBean.status = ResultCode.SUCCESS
             } catch (e: Exception) {
                 e.printStackTrace()
-                responseBean.resultCode = HttpResultCode.FAIL
-                responseBean.message = e.message?:""
+                responseBean.status = ResultCode.FAIL
+                error.message= e.message?:""
             }
 
 
         }else{
-            responseBean.resultCode = HttpResultCode.FAIL
-            responseBean.message = "未接收到图片"
+            responseBean.status = ResultCode.FAIL
+            error.message = "未接收到图片"
+        }
+
+        if (responseBean.status == ResultCode.FAIL){
+            responseBean.error = error
         }
         resp.writer.println(JsonUtil.writeValueAsString(responseBean))
 
