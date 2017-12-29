@@ -11,6 +11,11 @@ import java.sql.PreparedStatement
 import java.sql.SQLException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
+import jdk.nashorn.internal.runtime.ScriptingFunctions.readLine
+import java.io.InputStreamReader
+import java.io.BufferedReader
+
+
 
 /**
  * 获取用户信息
@@ -87,12 +92,30 @@ class UserInfoServlet : BaseServlet() {
 
     }
 
+    /**
+     *  Rest类无法取得HTTP PUT请求发送的参数
+     *  rest类通过String id = request.getParameter("id");可以取得url传递过来的id参数值
+     *  但是，Put中的参数无法取得
+     *  可能是API只能解析GET、POST方式的表单提交。其他一些传统的MVC框架也有类似现象
+     *
+     *  参考[http://dbscx.iteye.com/blog/828167]
+     */
     override fun doPut(req: HttpServletRequest, resp: HttpServletResponse) {
         super.doPut(req, resp)
+        val input = BufferedReader(InputStreamReader(req.inputStream))
+        var line: String? = ""
+        var userInfo:UserInfoBean? = null
+        while (line != null){
+            line = input.readLine()
+            if(line != null){
+                val param = line.split("=").last()
+                userInfo = JsonUtil.readValue<UserInfoBean>(param, UserInfoBean::class.java)
+            }
+            println(line)
+        }
+
         val result = ResponseBean()
         val error = ErrorBean()
-        val param = String(req.getParameter("userInfo").toByteArray(Charset.forName("ISO8859-1")), Charset.defaultCharset())
-        val userInfo = JsonUtil.readValue<UserInfoBean>(param, UserInfoBean::class.java)
         var userId = -1
         if (req is ModifyServletRequestWrapper) {
             userId = req.userId
@@ -113,7 +136,7 @@ class UserInfoServlet : BaseServlet() {
                 error.message = "不存在此用户"
             } else {
                 result.status = ResultCode.SUCCESS
-                result.data = JsonUtil.writeValueAsString(param)
+                result.data = JsonUtil.writeValueAsString(userInfo!!)
 
             }
 
